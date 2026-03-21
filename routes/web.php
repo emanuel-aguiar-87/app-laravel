@@ -1,13 +1,14 @@
 <?php
 
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 
 Route::get('/', function () {
-    echo "Hello World";
+    return view('welcome');
 });
 
 Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -23,8 +24,9 @@ Route::middleware("auth")->group(function(){
 
 
     Route::resource('users', UserController::class);
+    Route::resource('posts', PostController::class);
 });
-Route::resource('products', ProductController::class);
+
 
 // Route::prefix("/users")->group(function(){
 //     Route::get("", [UserController::class, "index"])->name("users.index");
