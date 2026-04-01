@@ -3,10 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Services\PostService;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
+    private $postService;
+    public function __construct()
+    {
+        $this->postService = new PostService();
+    }
     /**
      * Display a listing of the resource.
      */
@@ -30,16 +36,16 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            "title" => "required",
-            "content" => "nullable"
+        $request->merge([
+            "user_id" => auth()->id()
         ]);
 
-        $post = new Post();
-        $post->title = $request->title;
-        $post->content = $request->content;
+        $post = $this->postService->createPost($request);
 
-        $post->save();
+        if (!$post) {
+            // return response()->json(["message" => "Erro ao cadastrar"], 500);
+            //seta na sessão uma mensagem de erro
+        }
 
         return redirect()->route('posts.index');
 
@@ -68,10 +74,13 @@ class PostController extends Controller
     public function update(Request $request, Post $post)
     {
 
-        $post->title = $request->title;
-        $post->content = $request->content;
-        $post->save();
+        $post = $this->postService->updatePost($request, $post);
 
+        if (!$post) {
+            // return response()->json(["message" => "Erro ao cadastrar"], 500);
+            //seta na sessão uma mensagem de erro
+            return redirect()->back()->withInput();
+        }
 
         return redirect()->route('posts.index');
     }

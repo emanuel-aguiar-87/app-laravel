@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,8 +18,7 @@ class AuthApiController extends Controller
 
         if (Auth::attempt($credentials)) {
 
-            $user = Auth::user();
-
+            $user = User::find(Auth::user()->id);
 
             $token = $user->createToken("access_token");
 
@@ -28,5 +28,14 @@ class AuthApiController extends Controller
         }
 
         return response()->json('Unauthorized', 401);
+    }
+
+    public function revokeToken(Request $request)
+    {
+        $user = User::find(Auth::user()->id);
+
+        $user->tokens()->delete();
+
+        return response()->json('Token revogado com sucesso');
     }
 }
