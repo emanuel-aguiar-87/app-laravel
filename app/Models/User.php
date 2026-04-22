@@ -52,4 +52,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Post::class);
     }
+
+    // EXEMPLO DE LIGAÇÃO DE 1 PARA 1
+    // public function post()
+    // {
+    //     return $this->hasOne(Post::class);
+    // }
 }

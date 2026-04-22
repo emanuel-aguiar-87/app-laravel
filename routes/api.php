@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\PostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,6 +23,14 @@ Route::middleware('auth:sanctum')->group(function(){
         'show' => 'api.posts.show',
         'update' => 'api.posts.update',
         'destroy' => 'api.posts.destroy',
+    ]);
+
+    Route::apiResource('categories', CategoryController::class)->names([
+        'index' => 'api.categories.index',
+        'store' => 'api.categories.store',
+        'show' => 'api.categories.show',
+        'update' => 'api.categories.update',
+        'destroy' => 'api.categories.destroy',
     ]);
 });
 

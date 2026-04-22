@@ -13,7 +13,8 @@ class PostService
         $request->validate([
             "title" => "required",
             "user_id" => "required",
-            "content" => "nullable"
+            "content" => "nullable",
+            "categories_id" => "array|exists:categories,id|required",
         ]);
 
         try {
@@ -23,6 +24,8 @@ class PostService
             $post->content = $request->content;
 
             $post->save();
+
+            $post->categories()->attach($request->categories_id);
 
             return $post;
 
@@ -36,7 +39,8 @@ class PostService
     {
         $request->validate([
             "title" => "required",
-            "content" => "nullable"
+            "content" => "nullable",
+            "categories_id" => "array|exists:categories,id|nullable",
         ]);
 
         try {
@@ -44,6 +48,8 @@ class PostService
             $post->content = $request->content;
 
             $post->save();
+
+            $post->categories()->sync($request->categories_id);
 
             return $post;
 
@@ -55,7 +61,8 @@ class PostService
     public function getPost(int $id)
     {
         try {
-            return Post::find($id);
+            $post = Post::with('categories')->find($id);
+            return $post;
         } catch (\Throwable $th) {
             return null;
         }
