@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PostResource;
 use App\Models\Post;
 use App\Services\PostService;
 use Exception;
@@ -20,9 +21,23 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $posts = Post::paginate(5);
+        $query = Post::query();
+
+        if($request->search) {
+            $query->where("title", "like", "%{$request->search}%");
+        }
+
+        if($request->start_date) {
+            $query->whereDate("created_at", ">=", $request->start_date);
+        }
+        if($request->end_date) {
+            $query->whereDate("created_at", "<=", $request->end_date);
+        }
+
+
+        $posts = $query->paginate(5);
 
         return response()->json($posts);
     }
@@ -52,7 +67,7 @@ class PostController extends Controller
 
             $post = $this->postService->getPost($id);
 
-            return response()->json($post);
+            return response()->json(PostResource::make($post));
 
         } catch (\Exception $th) {
            return response()->json(["message" => "Post não encontrado"], 1002);
