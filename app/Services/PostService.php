@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
 
 class PostService
 {
@@ -42,6 +42,9 @@ class PostService
             "content" => "nullable",
             "categories_id" => "array|exists:categories,id|nullable",
         ]);
+
+
+
 
         try {
             $post->title = $request->title;

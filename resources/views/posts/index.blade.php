@@ -29,7 +29,9 @@
                         <td>{{ $post->content }}</td>
                         <td>{{ $post->user->name }}</td>
                         <td>
+                            @can("update-post", $post)
                             <a href="{{ route('posts.edit', $post->id) }}" class="btn btn-primary">Editar</a>
+                            @endcan
                             <form action="{{ route('posts.destroy', $post->id) }}" method="post" style="display:inline-block;">
                                 @csrf
                                 @method('DELETE')

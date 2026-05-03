@@ -8,6 +8,8 @@ use App\Models\Post;
 use App\Services\PostService;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class PostController extends Controller
 {
@@ -80,6 +82,11 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
+
+        if(Gate::denies('update-post', $post)){
+            return response()->json(["error" => "Acesso negado"], 403);
+        }
+
         $post = $this->postService->updatePost($request, $post);
 
         if(!$post) {
